@@ -1,15 +1,22 @@
 package com.consumer.consumer_api;
 
+import com.consumer.consumer_api.client.IbgeClient;
 import com.consumer.consumer_api.model.Estado;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
 @SpringBootApplication
-public class ConsumerApiApplication {
+@EnableFeignClients
+public class ConsumerApiApplication implements CommandLineRunner {
+	@Autowired
+	private IbgeClient ibgeClient;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumerApiApplication.class, args);
@@ -34,6 +41,18 @@ public class ConsumerApiApplication {
 			System.out.print(estadoObj.getId());
 			System.out.print(" - ");
 			System.out.println(estadoObj.getNome());
+		}
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		System.out.println(ibgeClient.getEstados());
+		List<Estado> estados = ibgeClient.getEstados();
+
+		for (Estado estado : estados) {
+			System.out.print(estado.getId());
+			System.out.print(" - ");
+			System.out.println(estado.getNome());
 		}
 	}
 }
