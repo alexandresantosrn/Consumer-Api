@@ -2,6 +2,12 @@ package com.consumer.consumer_api;
 
 import com.consumer.consumer_api.client.IbgeClient;
 import com.consumer.consumer_api.model.Estado;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -18,16 +25,19 @@ public class ConsumerApiApplication implements CommandLineRunner {
 	@Autowired
 	private IbgeClient ibgeClient;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		SpringApplication.run(ConsumerApiApplication.class, args);
 		initRestTemplate();
+		initHttpClient();
 	}
 
 	private static void initRestTemplate() {
+		System.out.println("--- RestTemplate ---");
+
 		RestTemplate restTemplate = new RestTemplate();
 		String url = "http://servicodados.ibge.gov.br/api/v1/localidades/estados";
-		String response = restTemplate.getForObject(url, String.class);
-		System.out.println(response);
+		String result = restTemplate.getForObject(url, String.class);
+		System.out.println(result);
 		List estados = restTemplate.getForObject(url, List.class);
 
 		for(Object estado : estados) {
@@ -44,8 +54,26 @@ public class ConsumerApiApplication implements CommandLineRunner {
 		}
 	}
 
+	private static void initHttpClient() throws IOException {
+		System.out.println("--- HttpClient ---");
+
+        HttpResponse response;
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet("http://servicodados.ibge.gov.br/api/v1/localidades/estados");
+
+            response = httpClient.execute(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String result = EntityUtils.toString(response.getEntity());
+		System.out.println(result);
+	}
+
 	@Override
 	public void run(String... args) throws Exception {
+		System.out.println("--- Feign ---");
+
 		System.out.println(ibgeClient.getEstados());
 		List<Estado> estados = ibgeClient.getEstados();
 
