@@ -1,6 +1,7 @@
 package com.consumer.consumer_api.client;
 
 import com.consumer.consumer_api.model.Estado;
+import com.consumer.consumer_api.model.Municipio;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -11,4 +12,9 @@ public interface IbgeClient {
 
     @GetMapping("localidades/estados")
     List<Estado> getEstados();
+
+    @GetMapping("localidades/estados/24/municipios")
+    List<Municipio> getMunicipiosRN();
+
+
 }

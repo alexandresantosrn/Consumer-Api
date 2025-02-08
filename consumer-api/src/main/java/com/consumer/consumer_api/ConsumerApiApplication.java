@@ -2,6 +2,7 @@ package com.consumer.consumer_api;
 
 import com.consumer.consumer_api.client.IbgeClient;
 import com.consumer.consumer_api.model.Estado;
+import com.consumer.consumer_api.model.Municipio;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -75,12 +76,20 @@ public class ConsumerApiApplication implements CommandLineRunner {
 		System.out.println("--- Feign ---");
 
 		System.out.println(ibgeClient.getEstados());
+
 		List<Estado> estados = ibgeClient.getEstados();
+		List<Municipio> municipiosRN = ibgeClient.getMunicipiosRN();
 
 		for (Estado estado : estados) {
 			System.out.print(estado.getId());
 			System.out.print(" - ");
 			System.out.println(estado.getNome());
+		}
+
+		for (Municipio municipio : municipiosRN) {
+			System.out.print(municipio.getId());
+			System.out.print(" - ");
+			System.out.println(municipio.getNome());
 		}
 	}
 }
