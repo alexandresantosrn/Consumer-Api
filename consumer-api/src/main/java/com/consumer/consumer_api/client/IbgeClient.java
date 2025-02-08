@@ -15,6 +15,4 @@ public interface IbgeClient {
 
     @GetMapping("localidades/estados/24/municipios")
     List<Municipio> getMunicipiosRN();
-
-
 }

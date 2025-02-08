@@ -80,6 +80,9 @@ public class ConsumerApiApplication implements CommandLineRunner {
 		List<Estado> estados = ibgeClient.getEstados();
 		List<Municipio> municipiosRN = ibgeClient.getMunicipiosRN();
 
+		estados.forEach(System.out::println);
+		municipiosRN.forEach(System.out::println);
+
 		for (Estado estado : estados) {
 			System.out.print(estado.getId());
 			System.out.print(" - ");
