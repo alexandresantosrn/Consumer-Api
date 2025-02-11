@@ -3,7 +3,6 @@ package com.consumer.consumer_api;
 import com.consumer.consumer_api.client.IbgeClient;
 import com.consumer.consumer_api.model.Estado;
 import com.consumer.consumer_api.model.Municipio;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -17,7 +16,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
@@ -37,22 +36,36 @@ public class ConsumerApiApplication implements CommandLineRunner {
 
 		RestTemplate restTemplate = new RestTemplate();
 		String url = "http://servicodados.ibge.gov.br/api/v1/localidades/estados";
-		String result = restTemplate.getForObject(url, String.class);
-		System.out.println(result);
-		List estados = restTemplate.getForObject(url, List.class);
 
-		for(Object estado : estados) {
-			LinkedHashMap estadoMap = (LinkedHashMap) estado;
-			Estado estadoObj = new Estado();
-			estadoObj.setId((Integer) estadoMap.get("id"));
-			estadoObj.setSigla((String) estadoMap.get("sigla"));
-			estadoObj.setNome((String) estadoMap.get("nome"));
-			System.out.println(estadoObj);
+		Estado[] estadosArray = restTemplate.getForObject(url, Estado[].class);
+        if (estadosArray != null) {
+            List<Estado> estados = Arrays.asList(estadosArray);
+			estados.forEach(System.out::println);
 
-			System.out.print(estadoObj.getId());
-			System.out.print(" - ");
-			System.out.println(estadoObj.getNome());
-		}
+			for(Estado estado : estados) {
+				System.out.print(estado.getId());
+				System.out.print(" - ");
+				System.out.println(estado.getNome());
+			}
+        }
+
+//		String result = restTemplate.getForObject(url, String.class);
+//		System.out.println(result);
+
+//		List estados = restTemplate.getForObject(url, List.class);
+//
+//		for(Object estado : estados) {
+//			LinkedHashMap estadoMap = (LinkedHashMap) estado;
+//			Estado estadoObj = new Estado();
+//			estadoObj.setId((Integer) estadoMap.get("id"));
+//			estadoObj.setSigla((String) estadoMap.get("sigla"));
+//			estadoObj.setNome((String) estadoMap.get("nome"));
+//			System.out.println(estadoObj);
+//
+//			System.out.print(estadoObj.getId());
+//			System.out.print(" - ");
+//			System.out.println(estadoObj.getNome());
+//		}
 	}
 
 	private static void initHttpClient() throws IOException {
